@@ -1,27 +1,26 @@
 #include <stdio.h>
-int count_combinations(int weights[], int n, int k) {
-    int dp[k+1];
-    for(int i = 0; i <= k; i++)
-        dp[i] = 0;
-    dp[0] = 1;
-    for(int i = 0; i < n; i++) {
-        for(int j = weights[i]; j <= k; j++) {
-            dp[j] += dp[j - weights[i]];
-        }
+long peanutButter(int arr[], int ind, int k)
+{
+    if (ind == 0)
+    {
+        return (k % arr[0] == 0);
     }
-    return dp[k];
+    long notTaken = peanutButter(arr, ind - 1, k);
+    long taken = 0;
+    if (arr[ind] <= k)
+        taken = peanutButter(arr, ind, k - arr[ind]);
+    return notTaken + taken;
 }
-int main() {
+int main()
+{
     int n, k;
     scanf("%d %d", &n, &k);
-    int weights[n];
-    for(int i = 0; i < n; i++) {
-        scanf("%d", &weights[i]);
+    int arr[n];
+    for (int i = 0; i < n; i++)
+    {
+        scanf("%d", &arr[i]);
     }
-    int ways = count_combinations(weights, n, k);
-    printf("%d\n", ways);
+    printf("%d", peanutButter(arr, n - 1, k));
+
     return 0;
 }
-
-
-
