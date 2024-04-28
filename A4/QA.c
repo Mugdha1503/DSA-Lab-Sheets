@@ -1,96 +1,69 @@
 #include <stdio.h>
-void numtoword(int num)
+#include <string.h>
+void less_than_thousand(int num, char *result)
 {
-    switch (num/100)
+    const char *ones[] = {"", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
+    const char *teens[] = {"", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"};
+    const char *tens[] = {"", "ten", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"};
+
+    if (num < 10)
+        strcat(result, ones[num]);
+    else if (num >= 11 && num <= 19)
+        strcat(result, teens[num - 10]);
+    else if (num < 100)
     {
-        case 1 : printf("one "); break;
-        case 2 : printf("two "); break;
-        case 3 : printf("three "); break;
-        case 4 : printf("four "); break;
-        case 5 : printf("five "); break;
-        case 6 : printf("six "); break;
-        case 7 : printf("seven "); break;
-        case 8 : printf("eight "); break;
-        case 9 : printf("nine "); break;
-        case 0 : break;
-    }
-    if (num/100 != 0){ printf("hundred ");}
-    num = num%100 ;
-    switch(num/10)
-    {
-        case 1 : 
+        strcat(result, tens[num / 10]);
+        if (num % 10 != 0)
         {
-            switch (num%10)
-            {
-                case 1 : printf("eleven "); break;
-                case 2 : printf("twelve "); break;
-                case 3 : printf("thirteen "); break;
-                case 4 : printf("fourteen "); break;
-                case 5 : printf("fifteen "); break;
-                case 6 : printf("sixteen "); break;
-                case 7 : printf("seventeen "); break;
-                case 8 : printf("eighteen "); break;
-                case 9 : printf("nineteen "); break;
-                case 0 : printf("ten ");break;
-            }
-        }break;
-        case 2 : printf("twenty "); break;
-        case 3 : printf("thirty "); break;
-        case 4 : printf("forty "); break;
-        case 5 : printf("fifty "); break;
-        case 6 : printf("sixty "); break;
-        case 7 : printf("seventy "); break;
-        case 8 : printf("eighty "); break;
-        case 9 : printf("ninety "); break;
-        case 0 : break;
+            strcat(result, " ");
+            strcat(result, ones[num % 10]);
+        }
     }
-    if (num/10 != 1)
+    else
     {
-        switch (num%10)
+        strcat(result, ones[num / 100]);
+        strcat(result, " hundred");
+        if (num % 100 != 0)
         {
-            case 1 : printf("one "); break;
-            case 2 : printf("two "); break;
-            case 3 : printf("three "); break;
-            case 4 : printf("four "); break;
-            case 5 : printf("five "); break;
-            case 6 : printf("six "); break;
-            case 7 : printf("seven "); break;
-            case 8 : printf("eight "); break;
-            case 9 : printf("nine "); break;
-            case 0 : break;
+            strcat(result, " ");
+            less_than_thousand(num % 100, result);
         }
     }
 }
-void splitnum(int n)
+void number_to_words(long long num, char *result)
 {
-    int num;
-    num = n/1000000000 ;
-    n=n%1000000000 ;
-    if (num!=0)
+    if (num == 0)
     {
-        numtoword(num);
-        printf("billion ");
+        strcat(result, "zero");
+        return;
     }
-    num = n/1000000 ;
-    n=n%1000000 ;
-    if (num!=0)
+    if (num >= 1000000000)
     {
-        numtoword(num);
-        printf("million ");
+        less_than_thousand(num / 1000000000, result);
+        strcat(result, " billion ");
+        num %= 1000000000;
     }
-    num = n/1000 ;
-    n=n%1000 ;
-    if (num!=0)
+    if (num >= 1000000)
     {
-        numtoword(num);
-        printf("thousand ");
+        less_than_thousand(num / 1000000, result);
+        strcat(result, " million ");
+        num %= 1000000;
     }
-    numtoword(n);
+    if (num >= 1000)
+    {
+        less_than_thousand(num / 1000, result);
+        strcat(result, " thousand ");
+        num %= 1000;
+    }
+    if (num > 0)
+        less_than_thousand(num, result);
 }
 int main()
 {
-    int n;
-    scanf("%d",&n);
-    splitnum(n) ;
+    long long n;
+    scanf("%lld", &n);
+    char result[1000] = "";
+    number_to_words(n, result);
+    printf("%s\n", result);
     return 0;
 }
